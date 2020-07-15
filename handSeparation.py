@@ -12,11 +12,11 @@ def AutoCanny(image, sigma=0.33):
     # return the edged image
     return edged
 
-def GetImageFromValidate(image):
+def GetImageForValidatation(image):
     # para retornar a imagem ao tamanho original fazer 1 / pelo fator de resize
     x = 0.25
     y = 0.3
-    img = cv2.resize(np.copy(image), (0,0), fx=x, fy=y)
+    img = cv2.resize(image, (0,0), fx=x, fy=y)
     img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     res_auto = AutoCanny(img_gray)
@@ -33,7 +33,8 @@ def GetImageFromValidate(image):
     max_range = (count_px.shape[0] // 2) + (ini // 2)
     min_range = (count_px.shape[0] // 2) - (ini // 2)
     # print("Posicao do menor pixel:", np.argmin(count_px[ini:fim])+ini)
+    image_crop = image
     if min_range <= min_px <= max_range :
-        image = image[:, :int(min_px * (1/x))]
+        image_crop = image[:, :int(min_px * (1/x))]
 
-    return cv2.cvtColor(cv2.resize(img, (256,256)), cv2.COLOR_BGR2RGB)
+    return cv2.cvtColor(cv2.resize(image_crop, (256,256)), cv2.COLOR_BGR2RGB)

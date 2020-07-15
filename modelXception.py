@@ -5,18 +5,23 @@ from tensorflow.keras.layers import *
 import os
 
 
-def CreateModel():
+def CreateModel(freezeInitialLayers = 0):
     pretrained_model = Xception(weights="imagenet", input_shape=(299,299,3), include_top=False, pooling="max")
 
     x = (pretrained_model.output)
-    x = Dense(10, activation='relu')(x)
-    x = Dropout(0.5)(x)
-    x = Dense(10, activation='relu')(x)
+    x = Dense(512, activation='relu')(x)
+    x = Dropout(0.2)(x)
+    x = Dense(256, activation='relu')(x)
     x = Dense(1, activation='linear')(x)
+
+    for i, layer in enumerate(pretrained_model.layers):
+        if i >= freezeInitialLayers:
+            break
+        layer.trainable = False
 
     model = Model(pretrained_model.input, x)
 
-    model.compile(loss='mse', optimizer='adam', metrics=[mean_squared_error])
+    model.compile(loss='mse', optimizer='radam', metrics=[mean_squared_error])
     return model
 
 
