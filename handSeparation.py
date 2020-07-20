@@ -12,7 +12,7 @@ def AutoCanny(image, sigma=0.33):
     # return the edged image
     return edged
 
-def GetImageForValidatation(image):
+def GetImageForValidatation(image, shape):
     # para retornar a imagem ao tamanho original fazer 1 / pelo fator de resize
     x = 0.25
     y = 0.3
@@ -37,4 +37,4 @@ def GetImageForValidatation(image):
     if min_range <= min_px <= max_range :
         image_crop = image[:, :int(min_px * (1/x))]
 
-    return cv2.cvtColor(cv2.resize(image_crop, (256,256)), cv2.COLOR_BGR2RGB)
+    return cv2.resize(image_crop, shape)

@@ -6,7 +6,7 @@ import os
 
 
 def CreateModel(freezeInitialLayers = 0):
-    pretrained_model = Xception(weights="imagenet", input_shape=(299,299,3), include_top=False, pooling="max")
+    pretrained_model = Xception(weights="imagenet", input_shape=(299,299,3), include_top=False, pooling="avg")
 
     x = (pretrained_model.output)
     x = Dense(512, activation='relu')(x)
@@ -21,7 +21,7 @@ def CreateModel(freezeInitialLayers = 0):
 
     model = Model(pretrained_model.input, x)
 
-    model.compile(loss='mse', optimizer='radam', metrics=[mean_squared_error])
+    model.compile(loss='mse', optimizer='adam', metrics=[mean_squared_error])
     return model
 
 
