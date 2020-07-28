@@ -3,10 +3,6 @@ from tensorflow.keras.applications.xception import preprocess_input
 from tensorflow.keras.callbacks import *
 from sklearn.model_selection import train_test_split
 from matplotlib import pyplot as plt
-from dataAug import DoAugmentation
-import tensorflow as tf
-import cv2
-import numpy as np
 import modelXception
 import pandas as pd
 import datetime
@@ -33,32 +29,6 @@ def GetGenerators(size, df):
 
     return generator
 
-# def ReadAndResize(path, size):
-#     img = cv2.imread(path)
-#     return cv2.resize(img, size)
-#
-# def GetImage(path, size, doAug):
-#     aug = None
-#     img = ReadAndResize(path, size)
-#     if doAug:
-#         aug = DoAugmentation(img)
-#     return img, aug
-#
-# def GetImages(dataset, size, doAug):
-#     # images = np.append([GetImage(path=os.path.join(path_to_image, fname),
-#     #                             size=size,
-#     #                             doAug=doAug)
-#     #                     for fname in dataset["fileName"].values])
-#     images = None
-#     for fname in dataset["fileName"].values:
-#         img, aug = GetImage(path=os.path.join(path_to_image, fname),
-#                              size=size,
-#                              doAug=doAug)
-#         np.append(images, img)
-#         if doAug:
-#             np.append(images, aug)
-#     return images
-
 train_df_all = pd.read_csv(os.path.join(path_to_datasets, "train.csv"))
 train_df_all["path"] = train_df_all["fileName"].map(lambda x: os.path.join(path_to_image,
                                                          '{}'.format(x)))
@@ -79,25 +49,6 @@ print("train", train_df.shape[0], "validation", valid_df.shape[0])
 size = (299, 299)
 train_generator = GetGenerators(size, train_df)
 val_generator = GetGenerators(size, valid_df)
-
-files = train_df["path"].values
-tfRecor = tf.data.TFRecordDataset(filenames=files.tolist())
-for elem in tfRecor.take(100):
-    print(elem)
-a=1
-# augmented_train_batches = (
-#     train_dataset
-#     # Only train on a subset, so you can quickly see the effect.
-#     .take(NUM_EXAMPLES)
-#     .cache()
-#     .shuffle(num_train_examples//4)
-#     # The augmentation is added here.
-#     .map(augment, num_parallel_calls=AUTOTUNE)
-#     .batch(BATCH_SIZE)
-#     .prefetch(AUTOTUNE)
-# )
-# imgs_train = GetImages(dataset=train_df, size=size, doAug=False)
-# imgs_valid = GetImages(dataset=valid_df, size=size, doAug=False)
 
 model = modelXception.CreateModel(freezeInitialLayers=22)
 weight_file = "weights{}.h5".format(datetime.datetime.today().strftime("_%d-%m_%H-%M"))
